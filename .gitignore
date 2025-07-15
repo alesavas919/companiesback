@@ -1,0 +1,6 @@
+companies.exe
+Dockerfile
+mainterraform.tf
+outputs.tf
+user-data.sh
+variables.tf
