@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	"companies/database"
 	"companies/routes"
 	"companies/security"
 
@@ -20,8 +19,8 @@ func main() {
 	}
 
 	// START DATABASE
-	database.InitDB(connString)
-	defer database.CloseDB()
+	//database.InitDB(connString)
+	//defer database.CloseDB()
 
 	// ROUTES
 	r := routes.SetupRouter()
