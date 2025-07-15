@@ -6,13 +6,17 @@ import (
 
 	"companies/database"
 	"companies/models"
+	"companies/security"
 
 	"github.com/gin-gonic/gin"
 )
 
 func UserOpenTest(c *gin.Context) {
-	c.JSON(http.StatusOK, "users")
+	c.JSON(http.StatusOK, "initialized 2")
+}
 
+func UserOpenSecretTest(c *gin.Context) {
+	c.JSON(http.StatusOK, security.SecretString("test"))
 }
 
 func UserCreateUser(c *gin.Context) {

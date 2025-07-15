@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"companies/routes"
-	"companies/security"
 
 	"github.com/joho/godotenv"
 )
@@ -13,10 +12,10 @@ import (
 func main() {
 	// URL CONNECT DATABASE
 	godotenv.Load()
-	connString := os.Getenv("DB_CONNECTION_STRING")
-	if connString == "" {
-		connString = security.ResourceSecurityData("DB_CONNECTION_STRING")
-	}
+	//connString := os.Getenv("DB_CONNECTION_STRING")
+	//if connString == "" {
+	//	connString = security.ResourceSecurityData("DB_CONNECTION_STRING")
+	//}
 
 	// START DATABASE
 	//database.InitDB(connString)
