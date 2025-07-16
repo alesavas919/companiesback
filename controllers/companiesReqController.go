@@ -15,7 +15,7 @@ func CompaniesReqGetAllDataFromDatabase(c *gin.Context) {
 
 // ///////////////////////////////////////// GET FROM PETITION ///////////////////////////////////////////
 func CompaniesReqGetAllDataFromRequest(c *gin.Context) {
-	resData := service.CompaniesReqGetAllDataFromRequestService()
+	resData, _ := service.CompaniesReqGetAllDataFromRequestService()
 	c.String(http.StatusCreated, string([]byte(resData)))
 }
 

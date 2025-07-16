@@ -3,13 +3,13 @@ package test
 import "companies/service"
 
 func CompaniesReqGetAllDataFromDatabaseExperimental() []byte {
-	companies := service.CompaniesReqGetAllDataFromRequestService()
+	companies, _ := service.CompaniesReqGetAllDataFromRequestService()
 	return companies
 }
 
 // ///////////////////////////////////////// GET FROM PETITION ///////////////////////////////////////////
 func CompaniesReqGetAllDataFromRequestExperimental() string {
-	resData := service.CompaniesReqGetAllDataFromRequestService()
+	resData, _ := service.CompaniesReqGetAllDataFromRequestService()
 	return string([]byte(resData))
 }
 

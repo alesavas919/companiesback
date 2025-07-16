@@ -45,12 +45,18 @@ func CompaniesReqGetAllDataFromDatabaseService() []models.CompanyInsert {
 	return companies
 }
 
-func CompaniesReqGetAllDataFromRequestService() []byte {
+func CompaniesReqGetAllDataFromRequestService() ([]byte, error) {
 	//HTTP GET DATA FROM TR
-	var bearer = security.ResourceSecurityData("REGIS_INFO_A")
-	var url = security.ResourceSecurityData("REGIS_LIST")
+	var bearer, err1 = security.SecretString(1) //security.ResourceSecurityData("REGIS_INFO_A")
+	var url, err2 = security.SecretString(2)    //security.ResourceSecurityData("REGIS_LIST")
+	if err1 != nil {
+		return nil, err1
+	}
+	if err2 != nil {
+		return nil, err2
+	}
 	if bearer == "" || url == "" {
-		return nil
+		return nil, nil
 	}
 	bearer = "Bearer " + bearer
 
@@ -71,7 +77,7 @@ func CompaniesReqGetAllDataFromRequestService() []byte {
 	if err != nil {
 		log.Fatal("Rading data Error: ", err)
 	}
-	return resData
+	return resData, nil
 }
 
 func CompaniesReqLoadAllDataFromRequestService() ([]byte, error) {
