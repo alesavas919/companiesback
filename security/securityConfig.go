@@ -1,14 +1,13 @@
 package security
 
 import (
-	"log"
 	"os"
 
 	"github.com/hashicorp/vault/api"
 	"github.com/joho/godotenv"
 )
 
-func ResourceSecurityData(secretRoute string) string {
+func ResourceSecurityData(secretRoute string) (string, error) {
 	// Crear un cliente Vault
 	godotenv.Load()
 	config := &api.Config{
@@ -17,14 +16,14 @@ func ResourceSecurityData(secretRoute string) string {
 
 	client, err := api.NewClient(config)
 	if err != nil {
-		log.Fatalf(`No se pudo crear el cliente de Vault: ` + err.Error())
+		return "", err
 	}
 
 	client.SetToken(os.Getenv("SSL_TOKEN_PROJECT"))
 
 	secret, err := client.Logical().Read("secret/data/CONFIDENTIAL")
 	if err != nil {
-		log.Fatalf("Error al leer el secreto: %v", err)
+		return "", err
 	}
 
 	if secret != nil && secret.Data != nil {
@@ -32,9 +31,9 @@ func ResourceSecurityData(secretRoute string) string {
 		if ok {
 			regisInfo, ok := secretMap[secretRoute].(string)
 			if ok {
-				return regisInfo
+				return regisInfo, nil
 			}
 		}
 	}
-	return ""
+	return "", nil
 }

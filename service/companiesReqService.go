@@ -47,8 +47,8 @@ func CompaniesReqGetAllDataFromDatabaseService() []models.CompanyInsert {
 
 func CompaniesReqGetAllDataFromRequestService() ([]byte, error) {
 	//HTTP GET DATA FROM TR
-	var bearer, err1 = security.SecretString(1) //security.ResourceSecurityData("REGIS_INFO_A")
-	var url, err2 = security.SecretString(2)    //security.ResourceSecurityData("REGIS_LIST")
+	var bearer, err1 = security.ResourceSecurityData("REGIS_INFO_A")
+	var url, err2 = security.ResourceSecurityData("REGIS_LIST")
 	if err1 != nil {
 		return nil, err1
 	}
@@ -58,7 +58,6 @@ func CompaniesReqGetAllDataFromRequestService() ([]byte, error) {
 	if bearer == "" || url == "" {
 		return nil, nil
 	}
-	bearer = "Bearer " + bearer
 
 	res, err := http.NewRequest("GET", url, nil)
 	res.Header.Add("Authorization", bearer)
@@ -83,8 +82,8 @@ func CompaniesReqGetAllDataFromRequestService() ([]byte, error) {
 func CompaniesReqLoadAllDataFromRequestService() ([]byte, error) {
 	//var companyModel models.CompaniesReqLst
 	//HTTP GET DATA FROM TR
-	var bearer, err1 = security.SecretString(1) //security.ResourceSecurityData("REGIS_INFO_A")
-	var url, err2 = security.SecretString(2)    //security.ResourceSecurityData("REGIS_LIST")
+	var bearer, err1 = security.ResourceSecurityData("REGIS_INFO_A") //security.SecretString(1)
+	var url, err2 = security.ResourceSecurityData("REGIS_LIST")      //security.SecretString(2)
 	if err1 != nil {
 		return nil, err1
 	}
