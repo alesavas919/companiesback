@@ -27,22 +27,6 @@ func ResourceSecurityData(secretRoute string) string {
 		log.Fatalf("Error al leer el secreto: %v", err)
 	}
 
-	/*if secret != nil && secret.Data != nil {
-		secretMap, ok := secret.Data["data"].(map[string]interface{})
-		if ok {
-			regisInfo, ok := secretMap["REGIS_INFO_A"].(string)
-			if ok {
-				fmt.Printf(regisInfo)
-			}
-			regisList, ok := secretMap["REGIS_LIST"].(string)
-			if ok {
-				fmt.Printf(regisList)
-			}
-		}
-	} else {
-		log.Println("No existen secretos")
-	}
-	*/
 	if secret != nil && secret.Data != nil {
 		secretMap, ok := secret.Data["data"].(map[string]interface{})
 		if ok {

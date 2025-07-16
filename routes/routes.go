@@ -21,7 +21,7 @@ func SetupRouter() *gin.Engine {
 		apiusers := routeBegin.Group("/api/users")
 		apiusers.POST("/", controllers.UserCreateUser)
 		apiusers.GET("/", controllers.UserOpenTest)
-		apiusers.GET("/sc", controllers.UserOpenSecretTest)
+		//apiusers.GET("/sc", controllers.UserOpenSecretTest)
 		apiusers.GET("/users", controllers.UserGetUsers)
 		apiusers.GET("/:id", controllers.UserGetUserByID)
 	}

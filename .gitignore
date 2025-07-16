@@ -3,6 +3,7 @@ Dockerfile
 mainterraform.tf
 outputs.tf
 user-data.sh
+user_data.sh.tpl
 variables.tf
 terraform.tfstate
 terraform.tfstate.backup

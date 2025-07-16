@@ -77,12 +77,17 @@ func CompaniesReqGetAllDataFromRequestService() []byte {
 func CompaniesReqLoadAllDataFromRequestService() ([]byte, error) {
 	//var companyModel models.CompaniesReqLst
 	//HTTP GET DATA FROM TR
-	var bearer = security.ResourceSecurityData("REGIS_INFO_A")
-	var url = security.ResourceSecurityData("REGIS_LIST")
+	var bearer, err1 = security.SecretString(1) //security.ResourceSecurityData("REGIS_INFO_A")
+	var url, err2 = security.SecretString(2)    //security.ResourceSecurityData("REGIS_LIST")
+	if err1 != nil {
+		return nil, err1
+	}
+	if err2 != nil {
+		return nil, err2
+	}
 	if bearer == "" || url == "" {
 		return nil, nil
 	}
-	bearer = "Bearer " + bearer
 
 	res, err := http.NewRequest("GET", url, nil)
 	res.Header.Add("Authorization", bearer)

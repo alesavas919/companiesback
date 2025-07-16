@@ -6,19 +6,19 @@ import (
 
 	"companies/database"
 	"companies/models"
-	"companies/security"
 
 	"github.com/gin-gonic/gin"
 )
 
 func UserOpenTest(c *gin.Context) {
-	c.JSON(http.StatusOK, "initialized 2")
+	c.JSON(http.StatusOK, "V4")
 }
 
-func UserOpenSecretTest(c *gin.Context) {
-	c.JSON(http.StatusOK, security.SecretString("test"))
-}
-
+/*
+	func UserOpenSecretTest(c *gin.Context) {
+		c.JSON(http.StatusOK, security.SecretString("test"))
+	}
+*/
 func UserCreateUser(c *gin.Context) {
 	var user models.User
 	errStr := c.ShouldBindJSON(&user)
