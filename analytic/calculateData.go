@@ -265,6 +265,7 @@ func RatingGenerator(ratingTo string, ratingFrom string) string {
 			calcDataToFromValue = -1
 		}
 	}
+	//TODO UPGRADE THE METHOD rating & target
 	if dataToValue > dataFromValue {
 		response += "POSITIVO [+], " // + strconv.FormatFloat(calcDataToFromValue, 'f', 2, 64) + " "
 		if calcDataToFromValue >= 0 && calcDataToFromValue <= 2 {
