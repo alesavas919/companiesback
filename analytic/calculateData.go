@@ -76,10 +76,10 @@ func AnalyticCalculated(companyInsertListReq []models.CompanyInsert) []models.Co
 
 			"initiated by", "resumed by"
 
-			Estas acciones reflejan un cambio en la calificación de la acción:
+
 			"upgraded by" ,"reiterated by" ,"downgraded by"
 
-			Reflejan cambios en la estimación de valor de la acción:
+
 			"target raised by",  "price target maintained by", "target lowered by" (X)
 		*/
 		companyInsertList[i].ActionPoints = DataActionPointsCalc(companyInsertList[i].Info.Action,

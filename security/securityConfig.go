@@ -9,7 +9,7 @@ import (
 )
 
 func ResourceSecurityData(secretRoute string) string {
-	// Crear un cliente Vault
+	// Create a Vault Client
 	godotenv.Load()
 	config := &api.Config{
 		Address: os.Getenv("SSL_ADD_PROJECT"),

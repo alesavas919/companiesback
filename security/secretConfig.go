@@ -26,17 +26,14 @@ func SecretString(value int) (string, error) {
 
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId:     aws.String(secretName),
-		VersionStage: aws.String("AWSCURRENT"), // VersionStage defaults to AWSCURRENT if unspecified
+		VersionStage: aws.String("AWSCURRENT"),
 	}
 
 	result, err := svc.GetSecretValue(context.TODO(), input)
 	if err != nil {
-		// For a list of exceptions thrown, see
-		// https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
 		return "Response not found" + os.Getenv("TEST_ENV_A") + err.Error(), err
 	}
 
-	// Decrypts secret using the associated KMS key.
 	var secretString string = *result.SecretString
 	var dataResponse models.InfoResp
 	err = json.Unmarshal([]byte(secretString), &dataResponse)
@@ -52,6 +49,5 @@ func SecretString(value int) (string, error) {
 	if value == 2 {
 		return dataResponse.UList, nil
 	}
-	// Your code goes here.
 	return "", errors.New("NOT FOUND DATA")
 }
