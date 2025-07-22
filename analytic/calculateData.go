@@ -67,6 +67,7 @@ func AnalyticCalculated(companyInsertListReq []models.CompanyInsert) []models.Co
 			buy -> buy | good
 			n -> n | depends (x)
 			buy -> n | no recommend
+			7 > x
 		*/
 		ratingFromPoints = DataRatingPointsCalc(companyInsertList[i].Info.RatingFrom)
 		raitingToPoints = DataRatingPointsCalc(companyInsertList[i].Info.RatingTo)
@@ -76,10 +77,10 @@ func AnalyticCalculated(companyInsertListReq []models.CompanyInsert) []models.Co
 
 			"initiated by", "resumed by"
 
-			Estas acciones reflejan un cambio en la calificación de la acción:
+
 			"upgraded by" ,"reiterated by" ,"downgraded by"
 
-			Reflejan cambios en la estimación de valor de la acción:
+
 			"target raised by",  "price target maintained by", "target lowered by" (X)
 		*/
 		companyInsertList[i].ActionPoints = DataActionPointsCalc(companyInsertList[i].Info.Action,
@@ -124,16 +125,16 @@ func DataRatingPointsCalc(dataTo string) float64 {
 	}
 	//---------------------------
 	if dataTo == strings.ToUpper("Overweight") {
-		value = 7
+		value = 10 //7
 	}
 	if dataTo == strings.ToUpper("Outperform") {
-		value = 8
+		value = 11 //8
 	}
 	if dataTo == strings.ToUpper("Buy") {
-		value = 9
+		value = 12 //9
 	}
 	if dataTo == strings.ToUpper("Strong Buy") {
-		value = 10
+		value = 13 //10
 	}
 	return value
 }
@@ -141,26 +142,30 @@ func DataRatingPointsCalc(dataTo string) float64 {
 func DataActionPointsCalc(action string, raitingToPoints float64) float64 {
 	action = strings.ToUpper(action)
 	var value float64 = 0
-	if action == strings.ToUpper("initiated by") || action == strings.ToUpper("resumed by") {
-		raitingToPoints -= 6
+	if action == strings.ToUpper("initiated by") {
+		/*raitingToPoints -= 6
 		if raitingToPoints <= 0 {
 			raitingToPoints -= 1
 			raitingToPoints = (raitingToPoints / 5 * 10) - 2
 		} else {
 			raitingToPoints = (raitingToPoints / 5 * 10) + 2
 		}
-		value = raitingToPoints
+		value = raitingToPoints*/
+		value = 1.5
 	}
-
+	if action == strings.ToUpper("resumed by") {
+		value = 0
+	}
 	if action == strings.ToUpper("upgraded by") {
 		//if raitingToPoints >= 4
-		value += (((raitingToPoints - 3) / 7) * 100) + 1
+		//value += (((raitingToPoints - 3) / 7) * 100) + 1
+		value = 2
 	}
 	if action == strings.ToUpper("reiterated by") {
 		value = 0
 	}
 	if action == strings.ToUpper("downgraded by") {
-		value = -1
+		/*value = -1
 		raitingToPoints -= 6
 		if raitingToPoints <= 0 {
 			raitingToPoints -= 1
@@ -168,11 +173,12 @@ func DataActionPointsCalc(action string, raitingToPoints float64) float64 {
 		} else {
 			raitingToPoints = (raitingToPoints / 5 * 10) + 2
 		}
-		value += raitingToPoints
+		value += raitingToPoints*/
+		value = -2
 	}
 
 	if action == strings.ToUpper("target raised by") {
-		value = 1
+		value = 3
 	}
 	if action == strings.ToUpper("price target maintained by") {
 		value = 0
@@ -202,7 +208,9 @@ func SummaryGenerator(companyInsert models.CompaniesInsertCalculated) string {
 		`
 	var rating = `Las compras de acciones en su estado inicial es de ` + companyInsert.Info.RatingFrom +
 		` y la inversion a futuro es de ` + companyInsert.Info.RatingTo + " " +
-		RatingGenerator(companyInsert.Info.RatingTo, companyInsert.Info.RatingFrom)
+		RatingGenerator(companyInsert.Info.RatingTo,
+			companyInsert.Info.RatingFrom, companyInsert.Info.TargetTo, companyInsert.Info.TargetFrom,
+			companyInsert.Info.Action)
 	summary = generalInfo + inversion + action + rating
 	return summary
 }
@@ -224,8 +232,12 @@ func TargetGenerator(targetTo float64, targetFrom float64) string {
 func ActionGenerator(action string) string {
 	action = strings.ToUpper(action)
 	var response = "Un comportamiento "
-	if action == strings.ToUpper("initiated by") || action == strings.ToUpper("resumed by") {
-		response += "INICIAL, no se presenta NINGUNA ANOMALIA "
+	if action == strings.ToUpper("initiated by") {
+		response += "INICIAL posible POSITIVA [+], existe nuevos inversores "
+	}
+
+	if action == strings.ToUpper("resumed by") {
+		response += "INICIAL, existe un interes renovado "
 	}
 
 	if action == strings.ToUpper("upgraded by") {
@@ -255,33 +267,47 @@ func ActionGenerator(action string) string {
 	return response
 }
 
-func RatingGenerator(ratingTo string, ratingFrom string) string {
+func RatingGenerator(ratingTo string, ratingFrom string, targetTo float64, targetFrom float64, action string) string {
 	var response = "Un comportamiento "
 	var dataToValue = DataRatingPointsCalc(ratingTo)
 	var dataFromValue = DataRatingPointsCalc(ratingFrom)
-	var calcDataToFromValue = (dataToValue - dataFromValue)
-	if dataToValue < dataFromValue {
-		if dataToValue <= 6 {
-			calcDataToFromValue = -1
+	var actionPoints = DataActionPointsCalc(action, 0)
+	//var calcDataToFromValue = (dataToValue - dataFromValue)
+	var calcDataToFromPositiveValue = (dataToValue + dataFromValue)
+	//DONE UPGRADE THE METHOD rating & target
+	//HOLD - BUY
+	if actionPoints >= 0 {
+		response += "POSITIVO [+], Se recomienda invertir a - "
+		var resExist = false
+		if actionPoints >= 2 {
+			if (calcDataToFromPositiveValue >= 13) && (dataToValue >= dataFromValue) {
+				response += "CORTO PLAZO - "
+				resExist = true
+			}
 		}
-	}
-	//TODO UPGRADE THE METHOD rating & target
-	if dataToValue > dataFromValue {
-		response += "POSITIVO [+], " // + strconv.FormatFloat(calcDataToFromValue, 'f', 2, 64) + " "
-		if calcDataToFromValue >= 0 && calcDataToFromValue <= 2 {
-			response += "Se recomienda invertir a CORTO, MEDIANO y LARGO PLAZO "
+		if actionPoints == 0 {
+			if dataToValue >= 13 {
+				response += "MEDIANO PLAZO - "
+				resExist = true
+			}
 		}
-		if calcDataToFromValue >= 3 && calcDataToFromValue <= 5 {
-			response += "Se recomienda invertir a MEDIANO y LARGO PLAZO "
+		if actionPoints >= 0 {
+			if dataToValue >= 10 {
+				response += "LARGO PLAZO - "
+				resExist = true
+			}
 		}
-		if calcDataToFromValue >= 6 && calcDataToFromValue <= 10 {
-			response += "Se recomienda invertir a LARGO PLAZO "
+		if !resExist {
+			response = " Un comportamiento INESTABLE [?], el cual se recomienda analizar más a profundidad la posibilidad de inversion "
 		}
 	} else {
 		if dataToValue < dataFromValue {
 			response += "NEGATIVO [-], la compra tiende a haber perdidas futuras "
 		} else {
-			response = "Un comportamiento " + "NEUTRA [=], no es recomendable comprar ya que no se tiene nunguna ganancia "
+			response += "NEUTRO [=], no es recomendable comprar ya que no se tiene nunguna ganancia "
+			if targetTo < targetFrom {
+				response += "tambien es posible que existan perdidas a futuro por las inversion final inferior a la actual "
+			}
 		}
 	}
 	return response

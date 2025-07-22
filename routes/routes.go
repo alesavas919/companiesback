@@ -22,12 +22,8 @@ func SetupRouter() *gin.Engine {
 
 	{
 		apiusers := routeBegin.Group("/api/users")
-		apiusers.POST("/", controllers.UserCreateUser)
 		apiusers.GET("/", controllers.UserOpenTest)
 		apiusers.GET("", controllers.UserOpenTest)
-		//apiusers.GET("/sc", controllers.UserOpenSecretTest)
-		apiusers.GET("/users", controllers.UserGetUsers)
-		apiusers.GET("/:id", controllers.UserGetUserByID)
 	}
 
 	{
@@ -66,5 +62,11 @@ func SetupRouter() *gin.Engine {
 
 	routeBegin.Use(cors.New(config))
 
+	routeBegin.OPTIONS("/*any", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Status(200)
+	})
 	return routeBegin
 }

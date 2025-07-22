@@ -1,5 +1,5 @@
 companies.exe
-Dockerfile
+##Dockerfile
 mainterraform.tf
 outputs.tf
 user-data.sh
