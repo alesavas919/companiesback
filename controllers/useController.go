@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func UserOpenTest(c *gin.Context) {
-	c.JSON(http.StatusOK, "V1.6.1")
+	godotenv.Load()
+	c.JSON(http.StatusOK, os.Getenv("VERSION"))
 }

@@ -12,28 +12,6 @@ import (
 func SetupRouter() *gin.Engine {
 	routeBegin := gin.Default()
 
-	{
-		companiesApi := routeBegin.Group("/api/companies")
-		companiesApi.GET("/", controllers.CompaniesReqGetAllDataFromDatabase)
-		companiesApi.GET("", controllers.CompaniesReqGetAllDataFromDatabase)
-		companiesApi.GET("/req", controllers.CompaniesReqGetAllDataFromRequest)
-		companiesApi.GET("/load", controllers.CompaniesReqLoadAllDataFromRequest)
-	}
-
-	{
-		apiusers := routeBegin.Group("/api/users")
-		apiusers.GET("/", controllers.UserOpenTest)
-		apiusers.GET("", controllers.UserOpenTest)
-	}
-
-	{
-		apiCalculateDate := routeBegin.Group("/api/calculate")
-		apiCalculateDate.GET("/", analytic.AnalyticCaculatedResponse)
-	}
-	/*
-		https://es.investing.com/indices/nyse-composite-historical-data
-	*/
-
 	// Configuración CORS
 	config := cors.Config{
 		AllowOrigins:     []string{"*"}, //NOT RECOMMENDED
@@ -62,11 +40,28 @@ func SetupRouter() *gin.Engine {
 
 	routeBegin.Use(cors.New(config))
 
-	routeBegin.OPTIONS("/*any", func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		c.Status(200)
-	})
+	{
+		companiesApi := routeBegin.Group("/api/companies")
+		companiesApi.GET("/", controllers.CompaniesReqGetAllDataFromDatabase)
+		companiesApi.GET("", controllers.CompaniesReqGetAllDataFromDatabase)
+		companiesApi.GET("/req", controllers.CompaniesReqGetAllDataFromRequest)
+		companiesApi.GET("/load", controllers.CompaniesReqLoadAllDataFromRequest)
+	}
+
+	{
+		apiusers := routeBegin.Group("/api/users")
+		apiusers.GET("/", controllers.UserOpenTest)
+		apiusers.GET("", controllers.UserOpenTest)
+		//apiusers.GET("/sc", controllers.UserOpenSecretTest)
+	}
+
+	{
+		apiCalculateDate := routeBegin.Group("/api/calculate")
+		apiCalculateDate.GET("/", analytic.AnalyticCaculatedResponse)
+	}
+	/*
+		https://es.investing.com/indices/nyse-composite-historical-data
+	*/
+
 	return routeBegin
 }
